@@ -1,0 +1,387 @@
+# CARTO ❤️ macOS (An installation guide)
+
+There are a lot of reasons why you'd want to go bear metal with your CARTO installation. It will provide higher speeds, it's fully integrated in your workflow (proper syntax highlight, copy and paste, etc) and it gives you a broader, more complete, understanding of how CARTO works.
+
+## Toolbelt
+
+You will need a couple of tools:
+
++ `git` (which you can get with XCode)
++ `brew` (which you can install get from [brew.sh](http://brew.sh))
+
+You can use other tools to install the necessary packages (`macports` for example) but I advise you stick with theese ones and don't mix pacakage managers. Even resorting to installing a package from source is better than mixing sym links and all that hell.
+
+## Installation
+
+All we're really doing, is following the [official install guide for CARTO](http://cartodb.readthedocs.io/en/latest/install.html) with some workaround were non OSX tools are used.
+
+As you may know, CARTO requires 5 main pieces (and it's dependencies) in order to run:
+
++ PostgreSQL (and the CARTO PostgreSQL extension)
++ SQL Api
++ Maps Api
++ CARTO
+
+We will now cover the installation of all of these. BTW, I'm assuming you're an organized human being and have a workspace. Mine is `~/Documents/workspace/carto/`. Also, NEVER run commands with `sudo` unless it's strictly necessary. Preventive `sudo` is a bad habit that spreads and messes up you're permissions. Don't do it! Always try without it first, and only `sudo` as a last resort.
+
+### PostgreSQL
+
+We will use `brew` to install PostgreSQL. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
+
+```
+brew install postgres --with-python
+```
+
+There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrasing) way of changing this for me is: 
+
+```
+# Create a temp superadmin role
+psql postgres
+postgres=# CREATE USER banana WITH createrole superuser;
+postgres=# \q
+
+# Rename you default user to postgres using that temp role
+psql -U banana postgres
+postgres=> ALTER USER guido RENAME TO postgres;
+postgres=> \q
+
+# Drop the temp role
+psql -U postgres
+postgres=# DROP USER banana;
+postgres=# \q
+```
+
+Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do som symlinking later. For now, let's modify the `pg_hba.conf` file accroding to instructions by doing
+
+```
+vim /usr/local/var/postgres/pg_hba.conf
+```
+
+Inside this file, we will have to scroll to the bottom and add a single line
+
+```
+local all postgres trust
+```
+
+Now, our postgres user has access to the db. Now, let's add some roles that the app will use:
+
+```
+sudo createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres
+sudo createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres
+```
+
+You're db is now configured! We will now install the cartodb-postgresql extension and it's dependencies.
+
+### PostgreSQL CARTO extension
+
+To install the extension, all you need is to clone the extension's git (in your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest release tag is. At the time of writing this guide it's `v0.2.1`
+
+```
+cd ~/Documents/workspace/carto
+git clone https://github.com/CartoDB/cartodb-postgresql.git
+git checkout <latest-release-tag>
+make all install
+```
+
+Of course, now we have to install the extension's dependencies.
+
+#### Dependencies
+
+One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`. 
+
+Installing `postgis` is very simple. You also need to create some postigs templates in the db for CARTO to work with:
+
+```
+brew install postgis
+sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
+sudo createlang plpgsql -U postgres -d template_postgis
+psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
+```
+
+Execute the above command now. This will take some time and if you're attentive enough you'll see the log say `installing gdal...`. Great right? Not so great!
+
+We use a very specific version of `ogr2ogr`. At the time of this guide, it's `2.1.0`. The issue is that the `gdal` dependency that has been installed with `postgis` contains `ogr2ogr v1.1.11`, which is not good. To make things worse, there is no `brew` installer for this version and the automatic formula for installing "latest" (2.2) is broken atm (and "latest" builds are not mantained by brew, understandably).
+
+Fear not, local installer, we will install from source! In your workspace (maybe not in `~/Documents/workspace/carto` since it's not really a part of CARTO), let's clone the GDal repo:
+
+```
+cd ~/Documents/workspace
+git clone https://github.com/OSGeo/gdal.git
+cd gdal/gdal
+git checkout tags/2.1.0
+./configure
+make install
+```
+
+That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
+
+
+```
+cd ~/Documents/workspace
+git clone https://github.com/CartoDB/pg_schema_triggers.git
+cd pg_schema_triggers
+make
+make install
+```
+
+That's it, all dependencies neede for building the `cartodb` extensions are here. Now we can:
+
+```
+psql postgres
+postgres=# CREATE EXTENSION cartodb;
+postgres=# \q
+```
+
+This should finish successfully. If not, stop and ask for help.
+
+Your DB is ready to go!
+
+### SQL API
+
+Let's try to get the SQL API up and running. 
+
+#### Dependencies
+
+Let's tackle first the dependecies. We need:
+
++ Redis
++ Node
+
+To install redis, we can simply:
+
+```
+brew install redis
+```
+
+For node, you need to know we use an outated version, so we need a good tool to manage node versions. This tool is called `nvm`. Let's install it:
+
+```
+brew intsall nvm
+```
+
+NOTE: Pay attention to the instructions at the end of this execution: it tells you how to set `nvm` to work in your machine (create dirs and export paths).
+
+Now let's tell `nvm` to install the version of `node` we want and to set it as global:
+
+```
+nvm install v0.10.26
+nvm use global v0.10.26
+```
+
+Let's download the actual SQL API code:
+
+```
+cd ~/Documents/workspace/carto
+git clone git://github.com/CartoDB/CartoDB-SQL-API.git
+cd CartoDB-SQL-API
+git checkout master
+```
+
+Now we can install all the packages (timely):
+
+```
+npm install
+```
+
+By now, you might realise that the SQL API is a Node app. We need to configure it. Let's start by copying the sample config as our main config:
+
+```
+cp config/environments/development.js.example config/environments/development.js
+```
+
+One last step: let's point this app to listen in `0.0.0.0`, which is needed since CARTO will run locally and need all it's parts to listen to internal requests (you might be thinking `127.0.0.1`, but that would listen to local are network but not same-machine comms).
+
+Open `config/environments/development.js` in your favorite editor, find the line that reads `module.exports.node_host = '127.0.0.1';` and make sure you change it to `module.exports.node_host = '0.0.0.0';`. Save and let's try to start it up:
+
+
+```
+node app.js development
+```
+
+Congratulations! The SQL API is running in macOS!
+
+### Maps API
+
+The dependencies for the Maps API are the same as for the SQL API, if you skipped that section go install those dependencies and come back.
+
+Let's clone the repo for the Maps API:
+
+```
+cd ~/Documents/workspace/carto
+git clone https://github.com/CartoDB/Windshaft-cartodb.git
+cd CartoDB-SQL-API
+git checkout master
+```
+
+I know I said all dependencies were installed, but that's not completely true. We need some stuff for `cairo` to work, so let's intall `pango` via brew:
+
+```
+brew install pango
+```
+
+Now we can install all the packages (timely):
+
+```
+npm install
+```
+
+By now, you might realise that the Maps API is a Node app. We need to configure it. Let's start by copying the sample config as our main config:
+
+```
+cp config/environments/development.js.example config/environments/development.js
+```
+
+One last step: let's point this app to listen in `0.0.0.0`, which is needed since CARTO will run locally and need all it's parts to listen to internal requests (you might be thinking `127.0.0.1`, but that would listen to local are network but not same-machine comms).
+
+Open `config/environments/development.js` in your favorite editor, find the line that reads `host: '127.0.0.1'` and make sure you change it to `host: '0.0.0.0'`. Save and let's try to start it up:
+
+
+```
+node app.js development
+```
+
+Congrats! You have the Maps API (a full tiler!) running in macOS.
+
+### CARTO Builder
+
+Now let's go for the piece that consumes from them all, the Builder! This is a Rails app, so we need:
+
++ Ruby (v2.2.3)
+
+#### Ruby
+
+Like with the SQL API and Maps API where we needed `nvm` to keep track of the `node` version we were using, we'll use `rvm` to keep install the right version of Ruby for our need (v2.2.3). Let's first install `rvm` (no `brew` port, sorry!)
+
+```
+\curl -sSL https://get.rvm.io | bash -s stable --ruby
+source /Users/guido/.rvm/scripts/rvm
+```
+
+And now we can do (these two will take a while):
+
+```
+rvm install ruby-2.2.3
+rvm --default use 2.2.3
+```
+
+### Rails
+
+Now that we have Ruby, we can tackle Rails and all other Ruby gems in one go. We just need `bundler` and the source code for the CARTO Builder.
+
+```
+ruby gem install bundler
+```
+
+What bundler does is grab all the gems defined in the `Gemfile` file and install them with their specified version. Convinient! Just do (this is timely as well):
+
+```
+cd ~/Documents/workspace/carto
+git clone https://github.com/CartoDB/cartodb.git
+cd CartoDB
+bundle install
+```
+
+Now we just have to configure our Rails server. We will have to copy two different sample config files and make them our real config files:
+
+```
+cp config/database.yml.sample config/database.yml
+cp config/app_config.yml.sample config/app_config.yml
+```
+
+PRO TIP: You may also sym link these. That way it's easier to keep up with future changes done to the `.sample` file, usually meaning new features.
+
+Let's take a moment to update submodules in the CartoDB repo, and make sure we have the latest version of the PostgreSQL extension.
+
+```
+git submodule init
+git submodule update
+cd lib/sql
+make install
+cd ../..
+```
+
+NOTE: You'll have to do this everytime the PostgreSQL extension is updated!
+
+Ok, we're almost done. Remember we built from source `gdal` v2.2.1 and installed it? Well, that brings `ogr2ogr` v2.2.1 with it and that's what we need, but sadly the config file is thought for onpremise installations were the binary is renamed with every version. So you need to open `config/app_config.yml` and change `binary:           'which ogr2ogr2.1` to `binary: 'which ogr2ogr'`.
+
+While we're on the subject of `ogr2ogr`, used by the importer to grab a CSV and put it in a db table, let's install one other thing the importer will need: the `unp` unapacker.
+
+```
+brew install unp
+```
+
+Now, let's migrate our db to work with CARTO:
+
+```
+bundle exec rake db:create
+bundle exec rake db:migrate
+```
+
+PRO TIP: you might want to `alias bex='bundle exec'`, it's used often ;)
+
+One last step is to install all the `node` modules (CARTO Builder also uses them for front stuff):
+
+```
+npm install
+```
+
+Let's start it up! (Make sure your PostgreSQL database is running, as well you Redis server).
+
+```
+bundle exec rails server
+```
+
+Boom, you're running! Don't forge to start the resque script for queued jobs to run:
+
+```
+bundle exec script/resque
+```
+
+## After installing
+
+Well, you've done away with the vagrant and you're free. Now let me suggest you create aliases for starting all the different pieces. I suggest these:
+
+```
+alias start_builder='cd ~/Documents/workspace/carto/cartoDB; bundle exec rails s -p 3000'
+alias start_resque='cd ~/Documents/workspace/carto/cartoDB; bundle exec script/resque'
+alias start_tiler='cd ~/Documents/workspace/carto/Windshaft-cartodb; node app.js development'
+alias start_sql_api='cd ~/Documents/workspace/carto/CartoDB-SQL-API; node app.js development'
+alias start_redis='redis-server &'
+alias start_postgres='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start'
+alias stop_postgres='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log stop'
+```
+
+Now you can open up a fullscreen terminal with 4 sections:
+
+```
++---------------+-----------------+
+|               |  start_postgres |
+| start_sql_api |  start_redis    |
+|               |  start_builder  |
++---------------+-----------------+
+|               |                 |
+|  start_tiler  |  start_resque   |
+|               |                 |
++---------------+-----------------+
+```
+
+And there you have it, CARTO is running on the Mac.
+
+### Creating a user
+
+You need to create a user to be able to use CARTO. To do so (the `mkdir log` is just in case you don't have it):
+
+```
+cd ~/Documents/workspace/carto
+mkdir log
+scripts/create_dev_user
+```
+
+Follow the instructions. I'll assume you chose the users username (or domain, as the script calls it) `username`. Now all that is left is that you insert a rule in `/etc/hosts` to redirect `username.localhost.lan:3000` to Rails. Open up (you can't avoid sudo here) `/etc/hosts` in your editor and add:
+
+```
+127.0.0.1 username.localhost.lan
+```
+
+Save and your done. Fire up all the pieces and visit `username.localhost.lan:3000` in you favorite browser.
+
