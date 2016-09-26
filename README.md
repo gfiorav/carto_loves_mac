@@ -13,7 +13,7 @@ You will need a couple of tools:
 + `git` (which you can get with XCode)
 + `brew` (which you can install get from [brew.sh](http://brew.sh))
 
-You can use other tools to install the necessary packages (`macports` for example) but I advise you stick with theese ones and don't mix pacakage managers. Even resorting to installing a package from source is better than mixing sym links and all that hell.
+You can use other tools to install the necessary packages (`macports` for example) but I advise you stick with these ones and don't mix package managers. Even resorting to installing a package from source is better than mixing sym links and all that hell.
 
 ## Installation
 
