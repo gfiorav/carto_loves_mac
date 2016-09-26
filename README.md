@@ -1,6 +1,10 @@
 # CARTO ❤️ macOS (An installation guide)
 
-There are a lot of reasons why you'd want to go bear metal with your CARTO installation. It will provide higher speeds, it's fully integrated in your workflow (proper syntax highlight, copy and paste, etc) and it gives you a broader, more complete, understanding of how CARTO works.
+There are a lot of reasons why you'd want to go bare metal with your CARTO installation. Among them:
+
++ Higher speeds
++ Full integration with your workflow (proper syntax highlight, copy and paste, etc)
++ Achieve a broader, more complete, understanding of how CARTO works.
 
 ## Toolbelt
 
