@@ -36,7 +36,7 @@ We will use `brew` to install PostgreSQL. There is one important bit though, we 
 brew install postgres --with-python
 ```
 
-There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrasing) way of changing this for me is: 
+There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrasing) way of changing this for me is:
 
 ```
 # Create a temp superadmin role
@@ -91,7 +91,7 @@ Of course, now we have to install the extension's dependencies.
 
 #### Dependencies
 
-One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`. 
+One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`.
 
 Installing `postgis` is very simple. You also need to create some postigs templates in the db for CARTO to work with:
 
@@ -142,7 +142,7 @@ Your DB is ready to go!
 
 ### SQL API
 
-Let's try to get the SQL API up and running. 
+Let's try to get the SQL API up and running.
 
 #### Dependencies
 
@@ -213,7 +213,7 @@ Let's clone the repo for the Maps API:
 ```
 cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/Windshaft-cartodb.git
-cd CartoDB-SQL-API
+cd Windshaft-cartodb
 git checkout master
 ```
 
@@ -273,7 +273,7 @@ rvm --default use 2.2.3
 Now that we have Ruby, we can tackle Rails and all other Ruby gems in one go. We just need `bundler` and the source code for the CARTO Builder.
 
 ```
-ruby gem install bundler
+gem install bundler
 ```
 
 What bundler does is grab all the gems defined in the `Gemfile` file and install them with their specified version. Convinient! Just do (this is timely as well):
@@ -283,6 +283,7 @@ cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/cartodb.git
 cd CartoDB
 bundle install
+pip install -r python_requiriments.txt
 ```
 
 Now we just have to configure our Rails server. We will have to copy two different sample config files and make them our real config files:
@@ -388,4 +389,3 @@ Follow the instructions. I'll assume you chose the users username (or domain, as
 ```
 
 Save and your done. Fire up all the pieces and visit `username.localhost.lan:3000` in you favorite browser.
-
