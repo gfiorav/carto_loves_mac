@@ -255,7 +255,7 @@ One last step: let's point this app to listen in `0.0.0.0`, which is needed sinc
 
 Open `config/environments/development.js` in your favorite editor, find the line that reads `host: '127.0.0.1'` and make sure you change it to `host: '0.0.0.0'`. Save and let's try to start it up:
 
-
+NOTE: If you're having segmentation fault errors, try to change your node version to 0.10.47.
 ```
 node app.js development
 ```
