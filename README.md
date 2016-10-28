@@ -38,6 +38,12 @@ We will use `brew` to install PostgreSQL. There is one important bit though, we 
 brew install postgres --with-python
 ```
 
+and make it run:
+
+```
+pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+```
+
 There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrasing) way of changing this for me is:
 
 ```
@@ -85,6 +91,7 @@ To install the extension, all you need is to clone the extension's git (in your 
 ```
 cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/cartodb-postgresql.git
+cd cartodb-postgresql
 git checkout <latest-release-tag>
 make all install
 ```
@@ -133,8 +140,15 @@ make install
 That's it, all dependencies neede for building the `cartodb` extensions are here. Now we can:
 
 ```
-psql postgres
+psql -U postgres
+postgres=# CREATE EXTENSION plpythonu;
+CREATE EXTENSION
+postgres=# CREATE EXTENSION schema_triggers;
+CREATE EXTENSION
+postgres=# CREATE EXTENSION postgis;
+CREATE EXTENSION
 postgres=# CREATE EXTENSION cartodb;
+CREATE EXTENSION
 postgres=# \q
 ```
 
@@ -165,7 +179,7 @@ For node, you need to know we use an outated version, so we need a good tool to 
 brew intsall nvm
 ```
 
-NOTE: Pay attention to the instructions at the end of this execution: it tells you how to set `nvm` to work in your machine (create dirs and export paths).
+NOTE: Pay attention to the instructions at the end of this execution: it tells you how to set `nvm` to work in your machine (create dirs and export paths). If you don't do this, you might get a 'nvm command not found' error. If you closed the message (fast fella huh?) you can bring it back doing `brew info nvm` ;).
 
 Now let's tell `nvm` to install the version of `node` we want and to set it as global:
 
@@ -317,7 +331,7 @@ While we're on the subject of `ogr2ogr`, used by the importer to grab a CSV and 
 brew install unp
 ```
 
-Now, let's migrate our db to work with CARTO:
+Now, let's migrate our db to work with CARTO (in addition to postgresql, you must have redis running `redis-server &`):
 
 ```
 bundle exec rake db:create
