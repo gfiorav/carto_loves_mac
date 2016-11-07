@@ -176,7 +176,7 @@ brew install redis
 For node, you need to know we use an outated version, so we need a good tool to manage node versions. This tool is called `nvm`. Let's install it:
 
 ```
-brew intsall nvm
+brew install nvm
 ```
 
 NOTE: Pay attention to the instructions at the end of this execution: it tells you how to set `nvm` to work in your machine (create dirs and export paths). If you don't do this, you might get a 'nvm command not found' error. If you closed the message (fast fella huh?) you can bring it back doing `brew info nvm` ;).
