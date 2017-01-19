@@ -32,12 +32,11 @@ We will now cover the installation of all of these. BTW, I'm assuming you're an 
 
 ### PostgreSQL
 
-WARNING: The following method will install the latest version of PostgreSQL available to brew. You should NOT do that. Find a way to specifiy you want 9.5 so it's compatible with CARTO. There are several methods to do this in brew but I haven't decided yet. I'd recommend against using custom taps by other users.
-
-We will use `brew` to install PostgreSQL. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
+We will use `brew` to install PostgreSQL 9.5. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
 
 ```
-brew install postgres --with-python # MAKE SURE IT'S 9.5, read WARNING above.
+brew tap Homebrew/homebrew-versions
+brew install homebrew/versions/postgresql95 --with-python
 ```
 
 and make it run:
