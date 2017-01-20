@@ -34,9 +34,10 @@ We will now cover the installation of all of these. BTW, I'm assuming you're an 
 
 We will use `brew` to install PostgreSQL 9.5. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
 
+If you have a previous version of PostgreSQL, make sure to migrate it. See `brew info postgresql` for details. If you decide to uninstall it completely, run `brew remove postgresql`. When you have sorted that out:
 ```
-brew tap Homebrew/homebrew-versions
 brew install homebrew/versions/postgresql95 --with-python
+brew install postgresql95
 ```
 
 and make it run:
@@ -64,7 +65,7 @@ postgres=# DROP USER banana;
 postgres=# \q
 ```
 
-Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do som symlinking later. For now, let's modify the `pg_hba.conf` file accroding to instructions by doing
+Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do some symlinking later. For now, let's modify the `pg_hba.conf` file accroding to instructions by doing
 
 ```
 vim /usr/local/var/postgres/pg_hba.conf
@@ -87,7 +88,7 @@ You're db is now configured! We will now install the cartodb-postgresql extensio
 
 ### PostgreSQL CARTO extension
 
-To install the extension, all you need is to clone the extension's git (in your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest release tag is. At the time of writing this guide it's `v0.2.1`
+To install the extension, all you need is to clone the extension's git (in your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest [release tag](https://github.com/CartoDB/cartodb-postgresql/releases) is. At the time of writing this guide it's `v0.18.5`
 
 ```
 cd ~/Documents/workspace/carto
@@ -103,10 +104,16 @@ Of course, now we have to install the extension's dependencies.
 
 One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`.
 
-Installing `postgis` is very simple. You also need to create some postigs templates in the db for CARTO to work with:
+Installing `postgis` is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postigs templates in the db for CARTO to work with:
 
 ```
-brew install postgis
+brew install automake libtool
+cd ~/Documents/workspace
+git clone https://github.com/postgis/postgis.git
+cd postgis
+git checkout 2.2.1
+./autogen.sh
+make install
 sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
 sudo createlang plpgsql -U postgres -d template_postgis
 psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
@@ -275,7 +282,7 @@ Like with the SQL API and Maps API where we needed `nvm` to keep track of the `n
 
 ```
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
-source /Users/guido/.rvm/scripts/rvm
+source ~/.rvm/scripts/rvm
 ```
 
 And now we can do (these two will take a while):
@@ -300,8 +307,13 @@ cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/cartodb.git
 cd CartoDB
 bundle install
-pip install -r python_requiriments.txt
+sudo easy_install pip
+sudo pip install -r python_requirements.txt
 ```
+
+If previous command fails because of gdal, comment the dependency: `# gdal==1.10.0`.
+
+If previous command fails because of six, try adding `--ignore-installed six`.
 
 Now we just have to configure our Rails server. We will have to copy two different sample config files and make them our real config files:
 
@@ -332,9 +344,10 @@ While we're on the subject of `ogr2ogr`, used by the importer to grab a CSV and 
 brew install unp
 ```
 
-Now, let's migrate our db to work with CARTO (in addition to postgresql, you must have redis running `redis-server &`):
+Now, let's migrate our db to work with CARTO (in addition to postgresql, you must run redis):
 
 ```
+redis-server &
 bundle exec rake db:create
 bundle exec rake db:migrate
 ```
@@ -353,7 +366,7 @@ Let's start it up! (Make sure your PostgreSQL database is running, as well you R
 bundle exec rails server
 ```
 
-Boom, you're running! Don't forge to start the resque script for queued jobs to run:
+Boom, you're running! Don't forget to start the resque script for queued jobs to run:
 
 ```
 bundle exec script/resque
@@ -396,7 +409,7 @@ You need to create a user to be able to use CARTO. To do so (the `mkdir log` is 
 ```
 cd ~/Documents/workspace/carto
 mkdir log
-scripts/create_dev_user
+script/create_dev_user
 ```
 
 Follow the instructions. I'll assume you chose the users username (or domain, as the script calls it) `username`. Now all that is left is that you insert a rule in `/etc/hosts` to redirect `username.localhost.lan:3000` to Rails. Open up (you can't avoid sudo here) `/etc/hosts` in your editor and add:
