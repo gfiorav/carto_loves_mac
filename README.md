@@ -32,11 +32,13 @@ We will now cover the installation of all of these. BTW, I'm assuming you're an 
 
 ### PostgreSQL
 
-We will use `brew` to install PostgreSQL 9.5. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
+We will use `brew` to install PostgreSQL 9.5 and uninstall previous versions (if any). There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
 
 ```
 brew tap Homebrew/homebrew-versions
+brew remove postgresql
 brew install homebrew/versions/postgresql95 --with-python
+brew link postgresql95
 ```
 
 and make it run:
@@ -103,10 +105,15 @@ Of course, now we have to install the extension's dependencies.
 
 One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`.
 
-Installing `postgis` is very simple. You also need to create some postigs templates in the db for CARTO to work with:
+Installing `postgis` is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postigs templates in the db for CARTO to work with:
 
 ```
-brew install postgis
+brew install automake libtool
+cd ~/Documents/workspace
+git clone https://github.com/postgis/postgis.git
+git checkout 2.2.1
+./autogen.sh
+make && make install
 sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
 sudo createlang plpgsql -U postgres -d template_postgis
 psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
