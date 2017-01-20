@@ -307,7 +307,8 @@ cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/cartodb.git
 cd CartoDB
 bundle install
-pip install -r python_requiriments.txt
+sudo easy_install pip
+sudo pip install -r python_requirements.txt
 ```
 
 Now we just have to configure our Rails server. We will have to copy two different sample config files and make them our real config files:
