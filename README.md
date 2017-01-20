@@ -64,7 +64,7 @@ postgres=# DROP USER banana;
 postgres=# \q
 ```
 
-Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do som symlinking later. For now, let's modify the `pg_hba.conf` file accroding to instructions by doing
+Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do som symlinking later. For now, let's modify the `pg_hba.conf` file accroding to instructions by doing
 
 ```
 vim /usr/local/var/postgres/pg_hba.conf
