@@ -282,7 +282,7 @@ Like with the SQL API and Maps API where we needed `nvm` to keep track of the `n
 
 ```
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
-source /Users/guido/.rvm/scripts/rvm
+source ~/.rvm/scripts/rvm
 ```
 
 And now we can do (these two will take a while):
