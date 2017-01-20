@@ -344,9 +344,10 @@ While we're on the subject of `ogr2ogr`, used by the importer to grab a CSV and 
 brew install unp
 ```
 
-Now, let's migrate our db to work with CARTO (in addition to postgresql, you must have redis running `redis-server &`):
+Now, let's migrate our db to work with CARTO (in addition to postgresql, you must run redis):
 
 ```
+redis-server &
 bundle exec rake db:create
 bundle exec rake db:migrate
 ```
