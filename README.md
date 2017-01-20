@@ -32,13 +32,12 @@ We will now cover the installation of all of these. BTW, I'm assuming you're an 
 
 ### PostgreSQL
 
-We will use `brew` to install PostgreSQL 9.5 and uninstall previous versions (if any). There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
+We will use `brew` to install PostgreSQL 9.5. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
 
+If you have a previous version of PostgreSQL, make sure to migrate it. See `brew info postgresql` for details. If you decide to uninstall it completely, run `brew remove postgresql`. When you have sorted that out:
 ```
-brew tap Homebrew/homebrew-versions
-brew remove postgresql
 brew install homebrew/versions/postgresql95 --with-python
-brew link postgresql95
+brew install postgresql95
 ```
 
 and make it run:
