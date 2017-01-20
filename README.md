@@ -366,7 +366,7 @@ Let's start it up! (Make sure your PostgreSQL database is running, as well you R
 bundle exec rails server
 ```
 
-Boom, you're running! Don't forge to start the resque script for queued jobs to run:
+Boom, you're running! Don't forget to start the resque script for queued jobs to run:
 
 ```
 bundle exec script/resque
@@ -409,7 +409,7 @@ You need to create a user to be able to use CARTO. To do so (the `mkdir log` is 
 ```
 cd ~/Documents/workspace/carto
 mkdir log
-scripts/create_dev_user
+script/create_dev_user
 ```
 
 Follow the instructions. I'll assume you chose the users username (or domain, as the script calls it) `username`. Now all that is left is that you insert a rule in `/etc/hosts` to redirect `username.localhost.lan:3000` to Rails. Open up (you can't avoid sudo here) `/etc/hosts` in your editor and add:
