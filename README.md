@@ -311,7 +311,7 @@ sudo easy_install pip
 sudo pip install -r python_requirements.txt
 ```
 
-If previous command fails because of gdal, comment the dependency: `# gdal==1.10.0`.
+If previous command fails because of gdal, comment the dependency: `# gdal==1.10.0`. Try `sudo easy_install GDAL` instead (GDAL is needed for SHP normalization, for example).
 
 If previous command fails because of six, try adding `--ignore-installed six`.
 
