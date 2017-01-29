@@ -131,7 +131,7 @@ git clone https://github.com/OSGeo/gdal.git
 cd gdal/gdal
 git checkout tags/2.1.0
 ./configure
-make install
+sudo make install
 ```
 
 That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
@@ -308,10 +308,13 @@ git clone https://github.com/CartoDB/cartodb.git
 cd CartoDB
 bundle install
 sudo easy_install pip
-sudo pip install -r python_requirements.txt
 ```
 
-If previous command fails because of gdal, comment the dependency: `# gdal==1.10.0`. Try `sudo easy_install GDAL` instead (GDAL is needed for SHP normalization, for example).
+Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
+
+```
+sudo pip install -r python_requirements.txt
+```
 
 If previous command fails because of six, try adding `--ignore-installed six`.
 
