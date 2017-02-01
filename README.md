@@ -308,10 +308,13 @@ git clone https://github.com/CartoDB/cartodb.git
 cd CartoDB
 bundle install
 sudo easy_install pip
-sudo pip install -r python_requirements.txt
 ```
 
-If previous command fails because of gdal, comment the dependency: `# gdal==1.10.0`.
+Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
+
+```
+sudo pip install -r python_requirements.txt
+```
 
 If previous command fails because of six, try adding `--ignore-installed six`.
 
