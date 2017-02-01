@@ -131,7 +131,7 @@ git clone https://github.com/OSGeo/gdal.git
 cd gdal/gdal
 git checkout tags/2.1.0
 ./configure
-sudo make install
+make install
 ```
 
 That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
