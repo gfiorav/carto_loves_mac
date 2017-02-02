@@ -113,6 +113,7 @@ git clone https://github.com/postgis/postgis.git
 cd postgis
 git checkout 2.2.1
 ./autogen.sh
+./configure
 make install
 sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
 sudo createlang plpgsql -U postgres -d template_postgis
