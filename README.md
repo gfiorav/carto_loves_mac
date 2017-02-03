@@ -423,3 +423,13 @@ Follow the instructions. I'll assume you chose the users username (or domain, as
 ```
 
 Save and your done. Fire up all the pieces and visit `username.localhost.lan:3000` in you favorite browser.
+
+## Appendices
+
+### odbc_fdw
+
+In order to install [odbc_fdw](https://github.com/cartodb/odbc_fdw):
+
+`brew install unixodbc`
+
+Then, `make && make install`, and `create extension odbc_fdw` as usual.
