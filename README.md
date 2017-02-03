@@ -433,3 +433,11 @@ In order to install [odbc_fdw](https://github.com/cartodb/odbc_fdw):
 `brew install unixodbc`
 
 Then, `make && make install`, and `create extension odbc_fdw` as usual.
+
+`CREATE USER MAPPING` step will still fail. You need to install [iodbc](https://github.com/st3fan/osx-10.9/tree/master/iodbc-42.5/iodbc/mac).
+
+```
+brew install make
+git clone git@github.com:st3fan/osx-10.9.git
+cd osx-10.9/iodbc-42.5/iodbc/mac
+```
