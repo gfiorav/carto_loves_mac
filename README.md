@@ -163,6 +163,22 @@ postgres=# \q
 
 This should finish successfully. If not, stop and ask for help.
 
+We'll also install the `odbc_fdw` extension to make the latest connectors work. We'll clone a CARTO mantained version of the extension for PostgreSQL 9.5+ and compile+install.
+
+```
+cd ~/Documents/workspace
+git clone https://github.com/CartoDB/odbc_fdw.git
+cd odbc_fdw
+make install
+```
+
+If the installation is succesful we're done here. The user creation process will create the extension for all new users. If you want to upgrade an existent user, make sure to connect the the user databsase (you can find the database name in `user.database_name` field) and run:
+
+```
+whatever_user_database=# CREATE EXTENSION odbc_fdw;
+CREATE EXTENSION
+```
+
 Your DB is ready to go!
 
 ### SQL API
