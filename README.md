@@ -135,8 +135,9 @@ git checkout tags/2.1.0
 make install
 ```
 
-That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
+If you see an error mentioning jpeg2000 while installing GDAL 2.1, try replacing `JAS_CAST(uchar *, buf)` with `JAS_CAST(unsigned char*, buf)` in frmts/jpeg2000/jpeg2000_vsil_io.cpp, line 212. Via http://osgeo-org.1560.x6.nabble.com/gdal-dev-jpeg2000-jasper-error-compiling-gdal-2-1-from-git-release-branch-td5299100.html
 
+That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
 
 ```
 cd ~/Documents/workspace
@@ -171,6 +172,8 @@ git clone https://github.com/CartoDB/odbc_fdw.git
 cd odbc_fdw
 make install
 ```
+
+In case you've tried these instructions with PostgreSQL 9.6 and encountered an error with odbc_fdw, try editing `odbc_fdw.c` with the changes found here: https://github.com/CartoDB/odbc_fdw/pull/46/files
 
 If the installation is successful we're done here. The user creation process will create the extension for all new users. If you want to upgrade an existent user, make sure to connect to the user database (you can find the database name in `user.database_name` field) and run:
 
@@ -326,6 +329,8 @@ cd CartoDB
 bundle install
 sudo easy_install pip
 ```
+
+In case you see an eventmachine/openssl issue with `bundle install`, either in this step or perhaps later, try `bundle config build.eventmachine --with-cppflags=-I$(brew --prefix openssl)/include` via http://stackoverflow.com/questions/30818391/gem-eventmachine-fatal-error-openssl-ssl-h-file-not-found/31516586#31516586
 
 Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
 
