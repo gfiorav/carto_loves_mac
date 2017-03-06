@@ -19,13 +19,13 @@ You can use other tools to install the necessary packages (`macports` for exampl
 
 ## Installation
 
-All we're really doing, is following the [official install guide for CARTO](http://cartodb.readthedocs.io/en/latest/install.html) with some workaround were non OSX tools are used.
+All we're really doing, is following the [official install guide for CARTO](http://cartodb.readthedocs.io/en/latest/install.html) with some workarounds where non OSX tools are used.
 
-As you may know, CARTO requires 5 main pieces (and it's dependencies) in order to run:
+As you may know, CARTO requires 5 main pieces (and its dependencies) in order to run:
 
 + PostgreSQL (and the CARTO PostgreSQL extension)
-+ SQL Api
-+ Maps Api
++ SQL API
++ Maps API
 + CARTO
 
 We will now cover the installation of all of these. BTW, I'm assuming you're an organized human being and have a workspace. Mine is `~/Documents/workspace/carto/`. Also, NEVER run commands with `sudo` unless it's strictly necessary. Preventive `sudo` is a bad habit that spreads and messes up you're permissions. Don't do it! Always try without it first, and only `sudo` as a last resort.
@@ -46,7 +46,7 @@ and make it run:
 pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 ```
 
-There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrasing) way of changing this for me is:
+There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrassing) way of changing this for me is:
 
 ```
 # Create a temp superadmin role
@@ -65,7 +65,7 @@ postgres=# DROP USER banana;
 postgres=# \q
 ```
 
-Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do some symlinking later. For now, let's modify the `pg_hba.conf` file accroding to instructions by doing
+Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do some symlinking later. For now, let's modify the `pg_hba.conf` file according to instructions by doing
 
 ```
 vim /usr/local/var/postgres/pg_hba.conf
@@ -84,7 +84,7 @@ sudo createuser publicuser --no-createrole --no-createdb --no-superuser -U postg
 sudo createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres
 ```
 
-You're db is now configured! We will now install the cartodb-postgresql extension and it's dependencies.
+You're db is now configured! We will now install the cartodb-postgresql extension and its dependencies.
 
 ### PostgreSQL CARTO extension
 
@@ -104,7 +104,7 @@ Of course, now we have to install the extension's dependencies.
 
 One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`.
 
-Installing `postgis` is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postigs templates in the db for CARTO to work with:
+Installing `postgis` is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with:
 
 ```
 brew install automake libtool
@@ -122,9 +122,9 @@ psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION 
 
 Execute the above command now. This will take some time and if you're attentive enough you'll see the log say `installing gdal...`. Great right? Not so great!
 
-We use a very specific version of `ogr2ogr`. At the time of this guide, it's `2.1.0`. The issue is that the `gdal` dependency that has been installed with `postgis` contains `ogr2ogr v1.1.11`, which is not good. To make things worse, there is no `brew` installer for this version and the automatic formula for installing "latest" (2.2) is broken atm (and "latest" builds are not mantained by brew, understandably).
+We use a very specific version of `ogr2ogr`. At the time of this guide, it's `2.1.0`. The issue is that the `gdal` dependency that has been installed with `postgis` contains `ogr2ogr v1.1.11`, which is not good. To make things worse, there is no `brew` installer for this version and the automatic formula for installing "latest" (2.2) is broken atm (and "latest" builds are not maintained by brew, understandably).
 
-Fear not, local installer, we will install from source! In your workspace (maybe not in `~/Documents/workspace/carto` since it's not really a part of CARTO), let's clone the GDal repo:
+Fear not, local installer, we will install from source! In your workspace (maybe not in `~/Documents/workspace/carto` since it's not really a part of CARTO), let's clone the GDAL repo:
 
 ```
 cd ~/Documents/workspace
@@ -135,8 +135,9 @@ git checkout tags/2.1.0
 make install
 ```
 
-That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
+If you see an error mentioning jpeg2000 while installing GDAL 2.1, try replacing `JAS_CAST(uchar *, buf)` with `JAS_CAST(unsigned char*, buf)` in frmts/jpeg2000/jpeg2000_vsil_io.cpp, line 212. Via http://osgeo-org.1560.x6.nabble.com/gdal-dev-jpeg2000-jasper-error-compiling-gdal-2-1-from-git-release-branch-td5299100.html
 
+That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
 
 ```
 cd ~/Documents/workspace
@@ -146,7 +147,7 @@ make
 make install
 ```
 
-That's it, all dependencies neede for building the `cartodb` extensions are here. Now we can:
+That's it, all dependencies needed for building the `cartodb` extensions are here. Now we can:
 
 ```
 psql -U postgres
@@ -163,7 +164,7 @@ postgres=# \q
 
 This should finish successfully. If not, stop and ask for help.
 
-We'll also install the `odbc_fdw` extension to make the latest connectors work. We'll clone a CARTO mantained version of the extension for PostgreSQL 9.5+ and compile+install.
+We'll also install the `odbc_fdw` extension to make the latest connectors work. We'll clone a CARTO maintained version of the extension for PostgreSQL 9.5+ and compile+install.
 
 ```
 cd ~/Documents/workspace
@@ -172,7 +173,9 @@ cd odbc_fdw
 make install
 ```
 
-If the installation is succesful we're done here. The user creation process will create the extension for all new users. If you want to upgrade an existent user, make sure to connect the the user databsase (you can find the database name in `user.database_name` field) and run:
+In case you've tried these instructions with PostgreSQL 9.6 and encountered an error with odbc_fdw, try editing `odbc_fdw.c` with the changes found here: https://github.com/CartoDB/odbc_fdw/pull/46/files
+
+If the installation is successful we're done here. The user creation process will create the extension for all new users. If you want to upgrade an existent user, make sure to connect to the user database (you can find the database name in `user.database_name` field) and run:
 
 ```
 whatever_user_database=# CREATE EXTENSION odbc_fdw;
@@ -187,7 +190,7 @@ Let's try to get the SQL API up and running.
 
 #### Dependencies
 
-Let's tackle first the dependecies. We need:
+Let's tackle first the dependencies. We need:
 
 + Redis
 + Node
@@ -198,7 +201,7 @@ To install redis, we can simply:
 brew install redis
 ```
 
-For node, you need to know we use an outated version, so we need a good tool to manage node versions. This tool is called `nvm`. Let's install it:
+For node, you need to know we use an outdated version, so we need a good tool to manage node versions. This tool is called `nvm`. Let's install it:
 
 ```
 brew install nvm
@@ -234,7 +237,7 @@ By now, you might realise that the SQL API is a Node app. We need to configure i
 cp config/environments/development.js.example config/environments/development.js
 ```
 
-One last step: let's point this app to listen in `0.0.0.0`, which is needed since CARTO will run locally and need all it's parts to listen to internal requests (you might be thinking `127.0.0.1`, but that would listen to local are network but not same-machine comms).
+One last step: let's point this app to listen in `0.0.0.0`, which is needed since CARTO will run locally and need all it's parts to listen to internal requests (you might be thinking `127.0.0.1`, but that would listen to local on a network but not same-machine comms).
 
 Open `config/environments/development.js` in your favorite editor, find the line that reads `module.exports.node_host = '127.0.0.1';` and make sure you change it to `module.exports.node_host = '0.0.0.0';`. Save and let's try to start it up:
 
@@ -276,7 +279,7 @@ By now, you might realise that the Maps API is a Node app. We need to configure 
 cp config/environments/development.js.example config/environments/development.js
 ```
 
-One last step: let's point this app to listen in `0.0.0.0`, which is needed since CARTO will run locally and need all it's parts to listen to internal requests (you might be thinking `127.0.0.1`, but that would listen to local are network but not same-machine comms).
+One last step: let's point this app to listen in `0.0.0.0`, which is needed since CARTO will run locally and need all it's parts to listen to internal requests (you might be thinking `127.0.0.1`, but that would listen to local on a network but not same-machine comms).
 
 Open `config/environments/development.js` in your favorite editor, find the line that reads `host: '127.0.0.1'` and make sure you change it to `host: '0.0.0.0'`. Save and let's try to start it up:
 
@@ -317,7 +320,7 @@ Now that we have Ruby, we can tackle Rails and all other Ruby gems in one go. We
 gem install bundler
 ```
 
-What bundler does is grab all the gems defined in the `Gemfile` file and install them with their specified version. Convinient! Just do (this is timely as well):
+What bundler does is grab all the gems defined in the `Gemfile` file and install them with their specified version. Convenient! Just do (this is timely as well):
 
 ```
 cd ~/Documents/workspace/carto
@@ -326,6 +329,8 @@ cd CartoDB
 bundle install
 sudo easy_install pip
 ```
+
+In case you see an eventmachine/openssl issue with `bundle install`, either in this step or perhaps later, try `bundle config build.eventmachine --with-cppflags=-I$(brew --prefix openssl)/include` via http://stackoverflow.com/questions/30818391/gem-eventmachine-fatal-error-openssl-ssl-h-file-not-found/31516586#31516586
 
 Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
 
@@ -342,7 +347,7 @@ cp config/database.yml.sample config/database.yml
 cp config/app_config.yml.sample config/app_config.yml
 ```
 
-PRO TIP: You may also sym link these. That way it's easier to keep up with future changes done to the `.sample` file, usually meaning new features.
+PRO TIP: You may also symlink these. That way it's easier to keep up with future changes done to the `.sample` file, usually meaning new features.
 
 Let's take a moment to update submodules in the CartoDB repo, and make sure we have the latest version of the PostgreSQL extension.
 
@@ -354,11 +359,11 @@ make install
 cd ../..
 ```
 
-NOTE: You'll have to do this everytime the PostgreSQL extension is updated!
+NOTE: You'll have to do this every time the PostgreSQL extension is updated!
 
-Ok, we're almost done. Remember we built from source `gdal` v2.2.1 and installed it? Well, that brings `ogr2ogr` v2.2.1 with it and that's what we need, but sadly the config file is thought for onpremise installations were the binary is renamed with every version. So you need to open `config/app_config.yml` and change `binary:           'which ogr2ogr2.1` to `binary: 'which ogr2ogr'`.
+Ok, we're almost done. Remember we built from source `gdal` v2.2.1 and installed it? Well, that brings `ogr2ogr` v2.2.1 with it and that's what we need, but sadly the config file is thought for on-premise installations were the binary is renamed with every version. So you need to open `config/app_config.yml` and change `binary:           'which ogr2ogr2.1` to `binary: 'which ogr2ogr'`.
 
-While we're on the subject of `ogr2ogr`, used by the importer to grab a CSV and put it in a db table, let's install one other thing the importer will need: the `unp` unapacker.
+While we're on the subject of `ogr2ogr`, used by the importer to grab a CSV and put it in a db table, let's install one other thing the importer will need: the `unp` unpacker.
 
 ```
 brew install unp
@@ -380,7 +385,7 @@ One last step is to install all the `node` modules (CARTO Builder also uses them
 npm install
 ```
 
-Let's start it up! (Make sure your PostgreSQL database is running, as well you Redis server).
+Let's start it up! (Make sure your PostgreSQL database is running, as well as your Redis server).
 
 ```
 bundle exec rails server
@@ -438,4 +443,4 @@ Follow the instructions. I'll assume you chose the users username (or domain, as
 127.0.0.1 username.localhost.lan
 ```
 
-Save and your done. Fire up all the pieces and visit `username.localhost.lan:3000` in you favorite browser.
+Save and you're done. Fire up all the pieces and visit `username.localhost.lan:3000` in you favorite browser.
