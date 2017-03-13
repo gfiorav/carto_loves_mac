@@ -39,7 +39,9 @@ If you have a previous version of PostgreSQL, make sure to migrate it. See `brew
 brew install homebrew/versions/postgresql95 --with-python
 ```
 
-and make it run:
+NOTE: Make sure you read the message left after the installation. It will give you instructions to add the postgres executables in your path. Follow those instructions before continuing or else you will get `command not found` errors for all `pg_...` commands.
+
+Make PostgreSQL 9.5 server run:
 
 ```
 pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
