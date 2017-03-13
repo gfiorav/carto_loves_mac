@@ -37,7 +37,6 @@ We will use `brew` to install PostgreSQL 9.5. There is one important bit though,
 If you have a previous version of PostgreSQL, make sure to migrate it. See `brew info postgresql` for details. If you decide to uninstall it completely, run `brew remove postgresql`. When you have sorted that out:
 ```
 brew install homebrew/versions/postgresql95 --with-python
-brew install postgresql95
 ```
 
 and make it run:
