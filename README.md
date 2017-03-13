@@ -44,7 +44,7 @@ NOTE: Make sure you read the message left after the installation. It will give y
 Make PostgreSQL 9.5 server run:
 
 ```
-pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
+pg_ctl -D /usr/local/var/postgres@9.5 -l /usr/local/var/postgres/server.log start
 ```
 
 There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrassing) way of changing this for me is:
