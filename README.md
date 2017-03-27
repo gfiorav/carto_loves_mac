@@ -81,8 +81,8 @@ local all postgres trust
 Now, our postgres user has access to the db. Now, let's add some roles that the app will use:
 
 ```
-sudo createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres
-sudo createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres
+createuser publicuser --no-createrole --no-createdb --no-superuser -U postgres
+createuser tileuser --no-createrole --no-createdb --no-superuser -U postgres
 ```
 
 You're db is now configured! We will now install the cartodb-postgresql extension and its dependencies.
