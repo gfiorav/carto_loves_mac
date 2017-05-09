@@ -272,6 +272,12 @@ I know I said all dependencies were installed, but that's not completely true. W
 brew install pango
 ```
 
+You will need Yarn in order to install packages:
+
+```
+npm install yarn
+```
+
 Now we can install all the packages (timely):
 
 ```
