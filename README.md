@@ -281,7 +281,7 @@ npm install yarn
 Now we can install all the packages (timely):
 
 ```
-npm install
+node_modules/.bin/yarn 
 ```
 
 By now, you might realise that the Maps API is a Node app. We need to configure it. Let's start by copying the sample config as our main config:
