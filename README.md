@@ -217,8 +217,8 @@ NOTE: Pay attention to the instructions at the end of this execution: it tells y
 Now let's tell `nvm` to install the version of `node` we want and to set it as global:
 
 ```
-nvm install v0.10.26
-nvm use global v0.10.26
+nvm install v6.9.2
+nvm use global v6.9.2
 ```
 
 Let's download the actual SQL API code:
