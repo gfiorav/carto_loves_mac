@@ -89,7 +89,7 @@ You're db is now configured! We will now install the cartodb-postgresql extensio
 
 ### PostgreSQL CARTO extension
 
-To install the extension, all you need is to clone the extension's git (in your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest [release tag](https://github.com/CartoDB/cartodb-postgresql/releases) is. At the time of writing this guide it's `0.18.5`
+To install the extension, all you need is to clone the extension's git (inside your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest [release tag](https://github.com/CartoDB/cartodb-postgresql/releases) is. At the time of writing this guide it's `0.18.5`
 
 ```
 cd ~/Documents/workspace/carto
