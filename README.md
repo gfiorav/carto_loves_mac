@@ -89,7 +89,7 @@ You're db is now configured! We will now install the cartodb-postgresql extensio
 
 ### PostgreSQL CARTO extension
 
-To install the extension, all you need is to clone the extension's git (in your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest [release tag](https://github.com/CartoDB/cartodb-postgresql/releases) is. At the time of writing this guide it's `0.18.5`
+To install the extension, all you need is to clone the extension's git (inside your workspace, organized human being), `cd` into it and make it (no sudo!!!). This will build some files and put them in the postgres extension path we saw before. Note that you will have to visit the repo and find out what the latest [release tag](https://github.com/CartoDB/cartodb-postgresql/releases) is. At the time of writing this guide it's `0.18.5`
 
 ```
 cd ~/Documents/workspace/carto
@@ -103,25 +103,7 @@ Of course, now we have to install the extension's dependencies.
 
 #### Dependencies
 
-One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis`.
-
-Installing `postgis` is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with:
-
-```
-brew install automake libtool geos proj libxml2
-cd ~/Documents/workspace
-git clone https://github.com/postgis/postgis.git
-cd postgis
-git checkout 2.2.1
-./autogen.sh
-./configure
-make install
-sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
-sudo createlang plpgsql -U postgres -d template_postgis
-psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
-```
-
-Execute the above command now. This will take some time and if you're attentive enough you'll see the log say `installing gdal...`. Great right? Not so great!
+One said dependency is `plypythonu`, but luckily that was taken care of when we specified `--with-python` in the PostgreSQL installation. Let's talk instead of `postgis` and `gdal`. We encourage you to install `gdal` before `postgis` to avoid problems with the installation of the last one.
 
 We use a very specific version of `ogr2ogr`. At the time of this guide, it's `2.1.0`. The issue is that the `gdal` dependency that has been installed with `postgis` contains `ogr2ogr v1.1.11`, which is not good. To make things worse, there is no `brew` installer for this version and the automatic formula for installing "latest" (2.2) is broken atm (and "latest" builds are not maintained by brew, understandably).
 
@@ -139,6 +121,25 @@ make install
 NOTE: If you see an error mentioning jpeg2000 while installing GDAL 2.1, try replacing `JAS_CAST(uchar *, buf)` with `JAS_CAST(unsigned char*, buf)` in frmts/jpeg2000/jpeg2000_vsil_io.cpp, line 212. Via http://osgeo-org.1560.x6.nabble.com/gdal-dev-jpeg2000-jasper-error-compiling-gdal-2-1-from-git-release-branch-td5299100.html
 
 NOTE: If you're having trouble with `bash-completion`, do: `brew remove bash-completion && brew install bash-completion@2` and try again.
+
+`postgis` time! Installing it is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with:
+
+```
+brew install automake libtool geos proj libxml2
+cd ~/Documents/workspace
+git clone https://github.com/postgis/postgis.git
+cd postgis
+git checkout 2.2.1
+./autogen.sh
+./configure
+make install
+sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
+sudo createlang plpgsql -U postgres -d template_postgis
+psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
+```
+
+Execute the above command now. This will take some time and if you're attentive enough you'll see the log say `installing gdal...`. Great right? Not so great!
+
 
 That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
 
@@ -217,8 +218,8 @@ NOTE: Pay attention to the instructions at the end of this execution: it tells y
 Now let's tell `nvm` to install the version of `node` we want and to set it as global:
 
 ```
-nvm install v0.10.26
-nvm use global v0.10.26
+nvm install v6.9.2
+nvm use global v6.9.2
 ```
 
 Let's download the actual SQL API code:
@@ -272,10 +273,16 @@ I know I said all dependencies were installed, but that's not completely true. W
 brew install pango
 ```
 
+You will need Yarn in order to install packages:
+
+```
+npm install yarn
+```
+
 Now we can install all the packages (timely):
 
 ```
-npm install
+node_modules/.bin/yarn 
 ```
 
 By now, you might realise that the Maps API is a Node app. We need to configure it. Let's start by copying the sample config as our main config:
