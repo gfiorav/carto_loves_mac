@@ -122,7 +122,7 @@ NOTE: If you see an error mentioning jpeg2000 while installing GDAL 2.1, try rep
 
 NOTE: If you're having trouble with `bash-completion`, do: `brew remove bash-completion && brew install bash-completion@2` and try again.
 
-`postgis` time! Installing it is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with.
+`postgis` time! Installing it is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with:
 
 ```
 brew install automake libtool geos proj libxml2 json-c
