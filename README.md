@@ -125,7 +125,7 @@ NOTE: If you're having trouble with `bash-completion`, do: `brew remove bash-com
 `postgis` time! Installing it is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with:
 
 ```
-brew install automake libtool geos proj libxml2
+brew install automake libtool geos proj libxml2 json-c
 cd ~/Documents/workspace
 git clone https://github.com/postgis/postgis.git
 cd postgis
