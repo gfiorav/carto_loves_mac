@@ -120,7 +120,7 @@ make install
 
 NOTE: If you see an error mentioning jpeg2000 while installing GDAL 2.1, try replacing `JAS_CAST(uchar *, buf)` with `JAS_CAST(unsigned char*, buf)` in frmts/jpeg2000/jpeg2000_vsil_io.cpp, line 212. Via http://osgeo-org.1560.x6.nabble.com/gdal-dev-jpeg2000-jasper-error-compiling-gdal-2-1-from-git-release-branch-td5299100.html
 
-NOTE: If you're having trouble with `bash-completion`, do: `brew remove bash-completion && brew install bash-completion@2` and try again.
+NOTE: If you're having trouble with `bash-completion`, do: `brew remove bash-completion && brew install bash-completion@2` and try again. Make sure to do a `make clean` before retrying.
 
 `postgis` time! Installing it is very simple. We'll install from source to be sure sure that it will use PostgreSQL 9.5. You also need to create some postgis templates in the db for CARTO to work with:
 
@@ -282,7 +282,7 @@ npm install yarn
 Now we can install all the packages (timely):
 
 ```
-node_modules/.bin/yarn 
+node_modules/.bin/yarn
 ```
 
 By now, you might realise that the Maps API is a Node app. We need to configure it. Let's start by copying the sample config as our main config:
