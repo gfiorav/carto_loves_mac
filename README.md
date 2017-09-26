@@ -344,6 +344,8 @@ sudo easy_install pip
 
 In case you see an eventmachine/openssl issue with `bundle install`, either in this step or perhaps later, try `bundle config build.eventmachine --with-cppflags=-I$(brew --prefix openssl)/include` via http://stackoverflow.com/questions/30818391/gem-eventmachine-fatal-error-openssl-ssl-h-file-not-found/31516586#31516586
 
+In case you see an eventmachine/charlock_holmes issue with `bundle install`, try `bundle config build.eventmachine -- --with-icu-dir=/usr/local/opt/icu4c --with-cxxflags=-std=c++11` via https://github.com/brianmario/charlock_holmes/issues/122
+
 Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
 
 ```
