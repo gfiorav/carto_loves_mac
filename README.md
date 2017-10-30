@@ -228,7 +228,6 @@ Let's download the actual SQL API code:
 cd ~/Documents/workspace/carto
 git clone git://github.com/CartoDB/CartoDB-SQL-API.git
 cd CartoDB-SQL-API
-git checkout master
 ```
 
 Now we can install all the packages (timely):
@@ -264,7 +263,6 @@ Let's clone the repo for the Maps API:
 cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/Windshaft-cartodb.git
 cd Windshaft-cartodb
-git checkout master
 ```
 
 I know I said all dependencies were installed, but that's not completely true. We need some stuff for `cairo` to work, so let's intall `pango` via brew:
@@ -276,7 +274,7 @@ brew install pango
 You will need Yarn in order to install packages:
 
 ```
-npm install yarn
+npm install yarn@0.27.5
 ```
 
 Now we can install all the packages (timely):
