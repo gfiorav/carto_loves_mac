@@ -331,19 +331,32 @@ Now that we have Ruby, we can tackle Rails and all other Ruby gems in one go. We
 gem install bundler
 ```
 
-What bundler does is grab all the gems defined in the `Gemfile` file and install them with their specified version. Convenient! Just do (this is timely as well):
+What bundler does is grab all the gems defined in the `Gemfile` file and install them with their specified version. Convenient!
 
 ```
 cd ~/Documents/workspace/carto
 git clone https://github.com/CartoDB/cartodb.git
 cd CartoDB
+
+```
+
+There's a problem though: Apple doesn't ship standard `c++11` compiler on macos, but the libraries are still there. We need to tell the `bunlder` gem to build `eventmachine` and `charlock_holmes` gems using these `c++11` libraries. To do so, we:
+
+```
+bundle config build.eventmachine --with-cxxflags=-std=c++11
+bundle config build.charlock_holmes --with-cxxflags=-std=c++11
+```
+
+Now we can run the bundler gem with confidence:
+
+```
 bundle install
 sudo easy_install pip
 ```
 
 In case you see an eventmachine/openssl issue with `bundle install`, either in this step or perhaps later, try `bundle config build.eventmachine --with-cppflags=-I$(brew --prefix openssl)/include` via http://stackoverflow.com/questions/30818391/gem-eventmachine-fatal-error-openssl-ssl-h-file-not-found/31516586#31516586
 
-In case you see an eventmachine/charlock_holmes issue with `bundle install`, try `bundle config build.eventmachine -- --with-icu-dir=/usr/local/opt/icu4c --with-cxxflags=-std=c++11` via https://github.com/brianmario/charlock_holmes/issues/122. This assumes that you have `icu4c` installed. If you don't, you can install it using `brew install icu4c`.
+In case you see an eventmachine/charlock_holmes issue with `bundle install`, try `bundle config build.eventmachine --with-icu-dir=/usr/local/opt/icu4c` via https://github.com/brianmario/charlock_holmes/issues/122. This assumes that you have `icu4c` installed. If you don't, you can install it using `brew install icu4c`.
 
 Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
 
