@@ -361,7 +361,7 @@ Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
 
 ```
 sudo easy_install pip
-sudo pip install -r python_requirements.txt
+sudo -H pip install -r python_requirements.txt --ignore-installed six
 ```
 
 If previous command fails because of six, try adding `--ignore-installed six`.
