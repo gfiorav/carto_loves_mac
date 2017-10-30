@@ -351,7 +351,6 @@ Now we can run the bundler gem with confidence:
 
 ```
 bundle install
-sudo easy_install pip
 ```
 
 In case you see an eventmachine/openssl issue with `bundle install`, either in this step or perhaps later, try `bundle config build.eventmachine --with-cppflags=-I$(brew --prefix openssl)/include` via http://stackoverflow.com/questions/30818391/gem-eventmachine-fatal-error-openssl-ssl-h-file-not-found/31516586#31516586
@@ -361,6 +360,7 @@ In case you see an eventmachine/charlock_holmes issue with `bundle install`, try
 Edit python_requirements.txt and change GDAL version to 2.1.0: `gdal==2.1.0`.
 
 ```
+sudo easy_install pip
 sudo pip install -r python_requirements.txt
 ```
 
