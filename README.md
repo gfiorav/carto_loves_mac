@@ -28,7 +28,7 @@ As you may know, CARTO requires 5 main pieces (and its dependencies) in order to
 + Maps API
 + CARTO
 
-We will now cover the installation of all of these. BTW, I'm assuming you're an organized human being and have a workspace. Mine is `~/Documents/workspace/carto/`. Also, NEVER run commands with `sudo` unless it's strictly necessary. Preventive `sudo` is a bad habit that spreads and messes up you're permissions. Don't do it! Always try without it first, and only `sudo` as a last resort.
+We will now cover the installation of all of these. BTW, I'm assuming you're an organized human being and have a workspace. Mine is `~/Documents/workspace/carto/`. Also, NEVER run commands with `sudo` unless it's strictly necessary. Preventive `sudo` is a bad habit that spreads and messes up your permissions. Don't do it! Always try without it first, and only `sudo` as a last resort.
 
 ### PostgreSQL
 
