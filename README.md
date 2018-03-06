@@ -138,9 +138,6 @@ sudo createlang plpgsql -U postgres -d template_postgis
 psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
 ```
 
-Execute the above command now. This will take some time and if you're attentive enough you'll see the log say `installing gdal...`. Great right? Not so great!
-
-
 That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
 
 ```
