@@ -32,7 +32,7 @@ We will now cover the installation of all of these. BTW, I'm assuming you're an 
 
 ### PostgreSQL
 
-We will use `brew` to install PostgreSQL 9.5. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
+We will use `brew` to install PostgreSQL 9.6. There is one important bit though, we must specify `--with-python` to make sure we get that `plypythonu` extension we will later need.
 
 If you have a previous version of PostgreSQL, make sure to migrate it. See `brew info postgresql` for details. If you decide to uninstall it completely, run `brew remove postgresql`. When you have sorted that out:
 ```
@@ -41,10 +41,10 @@ brew install postgresql@9.6 --with-python
 
 NOTE: Make sure you read the message left after the installation. It will give you instructions to add the postgres executables in your path. Follow those instructions before continuing or else you will get `command not found` errors for all `pg_...` commands.
 
-Make PostgreSQL 9.5 server run:
+Make PostgreSQL 9.6 server run:
 
 ```
-pg_ctl -D /usr/local/var/postgresql@9.5 -l /usr/local/var/postgresql@9.5/server.log start
+pg_ctl -D /usr/local/var/postgresql@9.6 -l /usr/local/var/postgresql@9.5/server.log start
 ```
 
 There is one point here where I'm sure there's a better solution, but it turns out that the db is created with a default superuser role with the name of you session user (in my case 'guido'). The (quite embarrassing) way of changing this for me is:
@@ -60,16 +60,10 @@ psql -U banana -d postgres -c "ALTER USER guido RENAME TO postgres"
 psql -U postgres -d postgres -c "DROP USER banana"
 ```
 
-Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do some symlinking later. For now, let's modify the `pg_hba.conf` file according to instructions by doing
+Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do some symlinking later. For now, let's modify the `pg_hba.conf` and add a single line so any locally running app (our future CARTO instace) can access our db without authentication:
 
 ```
-vim /usr/local/var/postgres/pg_hba.conf
-```
-
-Inside this file, we will have to scroll to the bottom and add a single line
-
-```
-local all postgres trust
+echo "local all postgres trust" >> /usr/local/var/postgres@9.6/pg_hba.conf
 ```
 
 Now, our postgres user has access to the db. Now, let's add some roles that the app will use:
