@@ -339,8 +339,6 @@ sudo easy_install pip
 sudo -H pip install -r python_requirements.txt --ignore-installed six
 ```
 
-If previous command fails because of six, try adding `--ignore-installed six`.
-
 Now we just have to configure our Rails server. We will have to copy two different sample config files and make them our real config files:
 
 ```
