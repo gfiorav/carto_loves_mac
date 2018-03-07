@@ -350,7 +350,7 @@ cp config/app_config.yml.sample config/app_config.yml
 
 PRO TIP: You may also symlink these. That way it's easier to keep up with future changes done to the `.sample` file, usually meaning new features.
 
-Let's take a moment to update submodules in the CartoDB repo, and make sure we have the latest version of the PostgreSQL extension.
+Let's take a moment to update submodules in the CartoDB repo, and make sure we have the latest version of the CartoDB PostgreSQL extension.
 
 ```
 git submodule init
@@ -360,7 +360,7 @@ make install
 cd ../..
 ```
 
-NOTE: You'll have to do this every time the PostgreSQL extension is updated!
+NOTE: You'll have to do this every time the CartoDB PostgreSQL extension is updated!
 
 Ok, we're almost done. Remember we built from source `gdal` v2.2.1 and installed it? Well, that brings `ogr2ogr` v2.2.1 with it and that's what we need, but sadly the config file is thought for on-premise installations were the binary is renamed with every version. So you need to open `config/app_config.yml` and change `binary:           'which ogr2ogr2.1` to `binary: 'which ogr2ogr'`.
 
