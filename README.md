@@ -160,8 +160,7 @@ NOTE: In case you've tried these instructions with PostgreSQL 9.6 and encountere
 If the installation is successful we're done here. The user creation process will create the extension for all new users. If you want to upgrade an existent user, make sure to connect to the user database (you can find the database name in `user.database_name` field) and run:
 
 ```
-whatever_user_database=# CREATE EXTENSION odbc_fdw;
-CREATE EXTENSION
+psql -U postgres -d <user db name> -c "CREATE EXTENSION odbc_fdw"
 ```
 
 Your DB is ready to go!
