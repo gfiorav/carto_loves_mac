@@ -249,13 +249,13 @@ brew install pango
 You will need Yarn in order to install packages:
 
 ```
-npm install yarn@0.27.5
+brew install yarn --without-node
 ```
 
 Now we can install all the packages (timely):
 
 ```
-node_modules/.bin/yarn
+yarn
 ```
 Note: The yarn package manager may not always work.  If it fails please try using the npm package manager instead (`npm install`)
 
