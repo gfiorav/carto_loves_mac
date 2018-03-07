@@ -246,18 +246,11 @@ I know I said all dependencies were installed, but that's not completely true. W
 brew install pango
 ```
 
-You will need Yarn in order to install packages:
-
-```
-npm install yarn@0.27.5
-```
-
 Now we can install all the packages (timely):
 
 ```
-node_modules/.bin/yarn
+npm install
 ```
-Note: The yarn package manager may not always work.  If it fails please try using the npm package manager instead (`npm install`)
 
 By now, you might realise that the Maps API is a Node app. We need to configure it. Let's start by copying the sample config as our main config:
 
