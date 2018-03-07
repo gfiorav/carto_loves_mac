@@ -51,19 +51,13 @@ There is one point here where I'm sure there's a better solution, but it turns o
 
 ```
 # Create a temp superadmin role
-psql postgres
-postgres=# CREATE USER banana WITH createrole superuser;
-postgres=# \q
+psql -U postgres -d postgres -c "CREATE USER banana WITH createrole superuser"
 
 # Rename you default user to postgres using that temp role
-psql -U banana postgres
-postgres=> ALTER USER guido RENAME TO postgres;
-postgres=> \q
+psql -U banana -d postgres -c "ALTER USER guido RENAME TO postgres"
 
 # Drop the temp role
-psql -U postgres
-postgres=# DROP USER banana;
-postgres=# \q
+psql -U postgres -d postgres -c "DROP USER banana"
 ```
 
 Ok! So we have a PostgreSQL database we can use. You can run `brew services start postgresql95` to start the PostgreSQL db (and restart automatically when you restart your computer). Now we have to configure it. By convention, `brew` will install everything under `/usr/local/var/`. This is important, we will have to do some symlinking later. For now, let's modify the `pg_hba.conf` file according to instructions by doing
