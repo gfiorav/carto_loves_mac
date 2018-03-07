@@ -36,7 +36,7 @@ We will use `brew` to install PostgreSQL 9.5. There is one important bit though,
 
 If you have a previous version of PostgreSQL, make sure to migrate it. See `brew info postgresql` for details. If you decide to uninstall it completely, run `brew remove postgresql`. When you have sorted that out:
 ```
-brew install postgresql@9.5 --with-python
+brew install postgresql@9.6 --with-python
 ```
 
 NOTE: Make sure you read the message left after the installation. It will give you instructions to add the postgres executables in your path. Follow those instructions before continuing or else you will get `command not found` errors for all `pg_...` commands.
