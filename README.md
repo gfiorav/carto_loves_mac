@@ -123,7 +123,7 @@ git checkout 2.2.1
 make install
 sudo createdb -T template0 -O postgres -U postgres -E UTF8 template_postgis
 sudo createlang plpgsql -U postgres -d template_postgis
-psql -U postgres template_postgis -c 'CREATE EXTENSION postgis;CREATE EXTENSION postgis_topology;'
+psql -U postgres template_postgis -c 'CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;'
 ```
 
 That should be working. Now we need to focus on `schema_tiggers`. For that, we'll build from source as well. We will clone the `pg_schema_triggers` in our workspace and make it:
